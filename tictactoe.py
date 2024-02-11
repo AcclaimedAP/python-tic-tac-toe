@@ -1,35 +1,52 @@
 
-board = [
-    [' ', ' ', ' '],
-    [' ', ' ', ' '],
-    [' ', ' ', ' ']
-]
+board = []
+
+def create_board(row, column):
+    for i in range(row):
+        board.append([' '] * column)
+    return board
+
+def board_line():
+    for i in range(len(board[0])):
+        print('---', end=' ')
+    print()
 
 def print_board():
-    print ('\n    0   1   2', end=' ')
-    print('\n  -------------')
+    print('    ', end='')
+    for i in range(len(board[0])):
+        print(i, end='   ')
+
+    print('\n   ', end='')
+    board_line()
     for i, row in enumerate(board):
         print(i, '|', end=' ')
         for cell in row:
             print(cell, end=' | ')
-        print('\n  -------------')
+        
+        print('\n   ', end='')
+        board_line()
     print()
+
+def all_equal(iterator):
+    iterator = iter(iterator)
+    try:
+        first = next(iterator)
+    except StopIteration:
+        return True
+    return all(first == x for x in iterator)
+
 
 def check_winner():
     for row in board:
-        if row[0] == row[1] == row[2] and row[0] != ' ':
+        if all_equal(row) and row[0] != ' ':
             return row[0]
-
-    for col in range(3):
-        if board[0][col] == board[1][col] == board[2][col] and board[0][col] != ' ':
+    for col in range(len(board[0])):
+        if all_equal([board[row][col] for row in range(len(board))]) and board[0][col] != ' ':
             return board[0][col]
-
-    if board[0][0] == board[1][1] == board[2][2] and board[0][0] != ' ':
+    if all_equal([board[i][i] for i in range(len(board))]) and board[0][0] != ' ':
         return board[0][0]
-
-    if board[0][2] == board[1][1] == board[2][0] and board[0][2] != ' ':
-        return board[0][2]
-
+    if all_equal([board[i][len(board) - i - 1] for i in range(len(board))]) and board[0][len(board) - 1] != ' ':
+        return board[0][len(board) - 1]
     return None
 
 def is_full():
@@ -40,6 +57,9 @@ def is_full():
     return True
 
 def main():
+    setRow = int(input('Enter number of rows: '))
+    setColumn = int(input('Enter number of columns: '))
+    create_board(setRow, setColumn)
     print_board()
     player = 'X'
     while True:
